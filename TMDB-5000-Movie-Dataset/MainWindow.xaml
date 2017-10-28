@@ -7,6 +7,19 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Label Content="5"></Label>
+        <StackPanel>
+            <Menu Margin="5">
+                <Button Content="Начать обучение"/>
+            </Menu>
+            <DockPanel Margin="5">
+                <Label Content="Название фильма: "/>
+                <TextBlock/>
+            </DockPanel>
+            <DockPanel Margin="5">
+                <Label Content="Описание: "/>
+                <TextBox Height="100" TextWrapping="Wrap"/>
+            </DockPanel>
+            <Button Content="Определить жанры"></Button>
+        </StackPanel>
     </Grid>
 </Window>
