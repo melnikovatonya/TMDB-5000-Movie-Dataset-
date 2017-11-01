@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TMDB_5000_Movie_Dataset"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
     <Grid>
         <StackPanel>
             <Menu Margin="5">
@@ -19,7 +19,7 @@
                 <Label Content="Описание: "/>
                 <TextBox Height="100" TextWrapping="Wrap"/>
             </DockPanel>
-            <Button Content="Определить жанры"></Button>
+            <Button Content=" Определить жанры " HorizontalAlignment="Center"></Button>
         </StackPanel>
     </Grid>
 </Window>
