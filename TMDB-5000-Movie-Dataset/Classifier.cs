@@ -83,5 +83,12 @@ namespace TMDB_5000_Movie_Dataset
             }
             sr.Close();
         }
+
+        void TransformOfDescrip(string description, string file_name)
+        {
+            char[] c = { ' ', ',', '.', '!', '?', ':', ';', '(', ')', '"', '-' };
+            string[] words = description.Split(c);
+            StreamReader sr = new StreamReader(file_name);
+        }
     }
 }
