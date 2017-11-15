@@ -87,8 +87,19 @@ namespace TMDB_5000_Movie_Dataset
         void TransformOfDescrip(string description, string file_name)
         {
             char[] c = { ' ', ',', '.', '!', '?', ':', ';', '(', ')', '"', '-' };
-            string[] words = description.Split(c);
+            string[] words = description.Split(c); // массив слов из описания без знаков
             StreamReader sr = new StreamReader(file_name);
+            string[] prep_and_conj = sr.ReadToEnd().Split('\r', '\n'); // массив предлогов и союзов из файла
+            List<string> transform_descrip = new List<string>(); // лист для конечного результата
+            foreach (string s in words)
+            {
+                if (Array.IndexOf(prep_and_conj, s) == -1) // проверка, что слова нет в массиве с союзами и предлогами
+                {
+                    transform_descrip.Add(s); // добавляем не союзы и предлоги
+                }
+            }
+
+            sr.Close();
         }
     }
 }
