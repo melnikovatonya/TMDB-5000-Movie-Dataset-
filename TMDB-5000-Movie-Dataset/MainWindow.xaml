@@ -9,7 +9,8 @@
     <Grid>
         <StackPanel>
             <Menu Margin="5">
-                <Button Content="Начать обучение"/>
+                <Button Content="Начать обучение"
+                        Click="Button_Click"/>
             </Menu>
             <DockPanel Margin="5">
                 <Label Content="Название фильма: "/>

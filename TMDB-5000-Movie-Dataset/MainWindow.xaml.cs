@@ -25,13 +25,15 @@ namespace TMDB_5000_Movie_Dataset
         {
             InitializeComponent();
         }
-
+		Classifier classifier;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if(!File.Exists("data.csv"))
-            {
-                ////////
-            }
+			classifier = new Classifier();
         }
-    }
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+	}
 }

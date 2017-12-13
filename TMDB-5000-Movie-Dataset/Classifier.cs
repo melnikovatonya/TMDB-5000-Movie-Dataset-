@@ -13,13 +13,16 @@ namespace TMDB_5000_Movie_Dataset
         string[] genres;
         string[] keywords;
         int[,] frequencies;
-        Classifier() { }
+        public Classifier()
+		{
+			LoadDataFromFile("../../database/tmdb_5000_movies.csv");
+		}
 
         public void LoadDataFromFile(string file_name)
         {
-            List<string> genres = new List<string>();
-            List<string> keywords = new List<string>();
-            List<string> owerviews = new List<string>();
+            List<string> _genres = new List<string>();
+            List<string> _keywords = new List<string>();
+            List<string> _owerviews = new List<string>();
             StreamReader sr = new StreamReader(file_name);
 			#region regex
 			var rx = new Regex("[0-9]+,(?<genres>\"*\\[.*\\]\"*),(?<site>.*),(?<id>[0-9]+),(?<keywords>\"*\\[.*\\]\"*),(?<lang>[a-z]+),(?<title>[^,]*),(?<owerview>\"*.*\"*),[0-9]+(\\.)*[0-9]*,\"*\\[.*\\]\"*,\"*\\[.*\\]\"*");
@@ -31,18 +34,18 @@ namespace TMDB_5000_Movie_Dataset
                     var m = rx.Match(s);
                     if (m.Success)
                     {
-                        genres.Add(m.Groups["genres"].ToString());
-                        keywords.Add(m.Groups["keywords"].ToString());
-                        owerviews.Add(m.Groups["owerview"].ToString());
+                        _genres.Add(m.Groups["genres"].ToString());
+                        _keywords.Add(m.Groups["keywords"].ToString());
+                        _owerviews.Add(m.Groups["owerview"].ToString());
                     }
                 }
             }
 			#endregion
 			#region genres
-			List<string>[] genres_1 = new List<string>[genres.Count];
+			List<string>[] genres_1 = new List<string>[_genres.Count];
             var rx1 = new Regex("\"\"id\"\": [0-9]+, \"\"name\"\": \"\"(?<name>[a-zA-Z0-9 ]*)\"\"");
             int p, i = 0;
-            foreach (var item in genres)
+            foreach (var item in _genres)
             {
                 p = 0;
                 genres_1[i] = new List<string>();
@@ -65,9 +68,9 @@ namespace TMDB_5000_Movie_Dataset
 			GetGenres(genres_1);
 			#endregion
 			#region keywords
-			List<string>[] keywords_1 = new List<string>[keywords.Count];
+			List<string>[] keywords_1 = new List<string>[_keywords.Count];
             i = 0;
-            foreach (var item in keywords)
+            foreach (var item in _keywords)
             {
                 p = 0;
                 keywords_1[i] = new List<string>();
@@ -89,9 +92,9 @@ namespace TMDB_5000_Movie_Dataset
             }
 			#endregion
 			#region owerviews
-			List<string>[] owerviews_1 = new List<string>[owerviews.Count];
+			List<string>[] owerviews_1 = new List<string>[_owerviews.Count];
 			i = 0;
-			foreach(var item in owerviews)
+			foreach(var item in _owerviews)
 			{
 				owerviews_1[i] = TransformOfDescrip(item);
 				i++;
@@ -103,8 +106,8 @@ namespace TMDB_5000_Movie_Dataset
 
 		List<string> TransformOfDescrip(string description)
         {
-			string file_name = "";
-            char[] c = { ' ', ',', '.', '!', '?', ':', ';', '(', ')', '"', '-' };
+			string file_name = "../../Предлоги и союзы.txt";
+            char[] c = { ' ', ',', '.', '!', '?', ':', ';', '(', ')', '"', '-', '\'', '_' };
             string[] words = description.Split(c); // массив слов из описания без знаков
             StreamReader sr = new StreamReader(file_name);
             string[] prep_and_conj = sr.ReadToEnd().Split('\r', '\n'); // массив предлогов и союзов из файла
@@ -113,7 +116,23 @@ namespace TMDB_5000_Movie_Dataset
             {
                 if (Array.IndexOf(prep_and_conj, s) == -1) // проверка, что слова нет в массиве с союзами и предлогами
                 {
-                    transform_descrip.Add(s); // добавляем не союзы и предлоги
+					if (s.Length == 1)
+					{
+						if (!Char.IsLetter(s[0]))
+							continue;
+					}
+					else
+					{
+						bool t = false;
+						foreach (var i in s)
+						{
+							if (!Char.IsLetter(i))
+								t = true;
+						}
+						if(!t)
+							transform_descrip.Add(s.ToLower());
+					}
+                    //transform_descrip.Add(s.ToLower()); // добавляем не союзы и предлоги
                 }
             }
             sr.Close();
@@ -147,12 +166,7 @@ namespace TMDB_5000_Movie_Dataset
 			{
 				temp.AddRange(item);
 			}
-			List<string> temp_1 = new List<string>();
-			foreach (var item in temp)
-			{
-				if (temp_1.IndexOf(item) == -1)
-					temp_1.Add(item);
-			}
+			List<string> temp_1 = temp.Distinct().ToList();
 			temp_1.Sort();
 			keywords = temp_1.ToArray();
 		}
