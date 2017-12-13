@@ -101,6 +101,7 @@ namespace TMDB_5000_Movie_Dataset
 			}
 			GetKeywords(keywords_1, owerviews_1);
 			#endregion
+			GetFrequencies(genres_1, keywords_1, owerviews_1);
 			sr.Close();
         }
 
@@ -170,5 +171,31 @@ namespace TMDB_5000_Movie_Dataset
 			temp_1.Sort();
 			keywords = temp_1.ToArray();
 		}
-    }
+
+		public void GetFrequencies(List<string>[] genres_1, List<string>[] keywords_1, List<string>[] owerviews_1)
+		{
+			frequencies = new int[genres.Length, keywords.Length];
+			
+			for (int t = 0; t < genres_1.Length; t++)
+			{
+				foreach(var item2 in genres_1[t])
+				{
+					int indexGenres = Array.IndexOf(genres, item2);
+					foreach(var item3 in keywords_1[t])
+					{
+						int indexKeywords = Array.IndexOf(keywords, item3);
+						frequencies[indexGenres, indexKeywords] += 1;
+					}
+
+					foreach (var item3 in owerviews_1[t])
+					{
+						int indexOwerviews = Array.IndexOf(keywords, item3);
+						frequencies[indexGenres, indexOwerviews] += 1;
+					}
+				}
+			}
+
+		}
+
+	}
 }
