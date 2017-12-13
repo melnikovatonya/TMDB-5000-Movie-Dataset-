@@ -62,6 +62,7 @@ namespace TMDB_5000_Movie_Dataset
                 }
                 i++;
             }
+			GetGenres(genres_1);
 			#endregion
 			#region keywords
 			List<string>[] keywords_1 = new List<string>[keywords.Count];
@@ -95,6 +96,7 @@ namespace TMDB_5000_Movie_Dataset
 				owerviews_1[i] = TransformOfDescrip(item);
 				i++;
 			}
+			GetKeywords(keywords_1, owerviews_1);
 			#endregion
 			sr.Close();
         }
@@ -120,7 +122,39 @@ namespace TMDB_5000_Movie_Dataset
 
 		public void GetGenres(List<string>[] genres_1)
 		{
-			//string[] temp = 
+			List<string> temp = new List<string>();
+			foreach (var item in genres_1)
+			{
+				temp.AddRange(item);
+			}
+			List<string> temp_1 = new List<string>();
+			foreach (var item in temp)
+			{
+				if (temp_1.IndexOf(item) == -1)
+					temp_1.Add(item);
+			}
+			temp_1.Sort();
+			genres = temp_1.ToArray();
+		}
+		public void GetKeywords(List<string>[] keywords_1, List<string>[] owerviews_1)
+		{
+			List<string> temp = new List<string>();
+			foreach(var item in keywords_1)
+			{
+				temp.AddRange(item);
+			}
+			foreach (var item in owerviews_1)
+			{
+				temp.AddRange(item);
+			}
+			List<string> temp_1 = new List<string>();
+			foreach (var item in temp)
+			{
+				if (temp_1.IndexOf(item) == -1)
+					temp_1.Add(item);
+			}
+			temp_1.Sort();
+			keywords = temp_1.ToArray();
 		}
     }
 }
