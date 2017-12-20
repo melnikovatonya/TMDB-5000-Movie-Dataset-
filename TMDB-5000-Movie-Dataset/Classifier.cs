@@ -13,7 +13,8 @@ namespace TMDB_5000_Movie_Dataset
         string[] genres;
         string[] keywords;
         int[,] frequencies;
-		int[,] probability;
+		double[,] probability;
+		double[] prob_genres;
 		const double p = 0.5;
         public Classifier()
 		{
@@ -68,6 +69,7 @@ namespace TMDB_5000_Movie_Dataset
                 i++;
             }
 			GetGenres(genres_1);
+			GetGenresProbability(genres_1);
 			#endregion
 			#region keywords
 			List<string>[] keywords_1 = new List<string>[_keywords.Count];
@@ -104,6 +106,7 @@ namespace TMDB_5000_Movie_Dataset
 			GetKeywords(keywords_1, owerviews_1);
 			#endregion
 			GetFrequencies(genres_1, keywords_1, owerviews_1);
+			GetProbability();
 			sr.Close();
         }
 
@@ -200,7 +203,7 @@ namespace TMDB_5000_Movie_Dataset
 		}
 		public void GetProbability()
 		{
-			probability = new int[frequencies.GetLength(0), frequencies.GetLength(1)];
+			probability = new double[frequencies.GetLength(0), frequencies.GetLength(1)];
 			for (int i = 0; i < genres.Length; i++)
 			{
 				int sum = 0;
@@ -238,5 +241,21 @@ namespace TMDB_5000_Movie_Dataset
 
 			return _genres;
 		}
+
+		public void GetGenresProbability(List<string>[] _genres)
+		{
+			prob_genres = new double[genres.Length];
+			for (int i = 0; i < genres.Length; i++)
+			{
+				int k = 0;
+				foreach (var item in _genres)
+				{
+					if (item.IndexOf(genres[i]) != -1)
+						k += 1;
+				}
+				prob_genres[i] = (double)k / _genres.Length;
+			}
+		}
+
 	}
 }
