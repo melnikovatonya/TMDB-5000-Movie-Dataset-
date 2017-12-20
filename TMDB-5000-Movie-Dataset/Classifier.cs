@@ -197,6 +197,22 @@ namespace TMDB_5000_Movie_Dataset
 			}
 
 		}
+		public void GetProbability()
+		{
+			int[,] probability = new int[frequencies.GetLength(0), frequencies.GetLength(1)];
+			for (int i = 0; i < genres.Length; i++)
+			{
+				int sum = 0;
+				for (int j = 0; j < frequencies.GetLength(1); j++)
+				{
+					sum += frequencies[i, j];
+				}
+				for (int j = 0; j < frequencies.GetLength(1); j++)
+				{
+					probability[i, j] = (frequencies[i, j] + 1) / (sum + keywords.Length);
+				}
+			}
+		}
 
 	}
 }
