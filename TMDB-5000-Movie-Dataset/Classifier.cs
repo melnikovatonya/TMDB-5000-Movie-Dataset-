@@ -13,6 +13,7 @@ namespace TMDB_5000_Movie_Dataset
         string[] genres;
         string[] keywords;
         int[,] frequencies;
+		const double p = 0.5;
         public Classifier()
 		{
 			LoadDataFromFile("../../database/tmdb_5000_movies.csv");
@@ -169,6 +170,28 @@ namespace TMDB_5000_Movie_Dataset
 			List<string> temp_1 = temp.Distinct().ToList();
 			temp_1.Sort();
 			keywords = temp_1.ToArray();
+		}
+
+		public List<string> ClassifierFilm(string[] _keywords)
+		{
+			List<string> _genres = new List<string>();
+			for (int i = 0; i < genres.Length; i++)
+			{
+				double _p = Math.Log(1); // вероятность жанра
+				for (int j = 0; j < _keywords.Length; j++)
+				{
+					if (Array.IndexOf(keywords, _keywords[j]) != -1)
+					{
+						if (true)       ///////////////
+							_p += Math.Log(1); // вероятность слова для жанра
+						else
+							_p += 0;
+					}
+				}
+				if (_p >= p)
+					_genres.Add(genres[i]);
+			}
+			return _genres;
 		}
     }
 }
