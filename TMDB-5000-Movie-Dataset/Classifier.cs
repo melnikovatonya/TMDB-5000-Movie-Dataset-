@@ -13,6 +13,7 @@ namespace TMDB_5000_Movie_Dataset
         string[] genres;
         string[] keywords;
         int[,] frequencies;
+		int[,] probability;
 		const double p = 0.5;
         public Classifier()
 		{
@@ -199,7 +200,7 @@ namespace TMDB_5000_Movie_Dataset
 		}
 		public void GetProbability()
 		{
-			int[,] probability = new int[frequencies.GetLength(0), frequencies.GetLength(1)];
+			probability = new int[frequencies.GetLength(0), frequencies.GetLength(1)];
 			for (int i = 0; i < genres.Length; i++)
 			{
 				int sum = 0;
@@ -213,6 +214,29 @@ namespace TMDB_5000_Movie_Dataset
 				}
 			}
 		}
+		public List<string> GetGenresOfFilm(string[] _keywords)
+		{
+			List<string> _genres = new List<string>();
 
+			for (int i = 0; i < genres.Length; i++)
+			{
+				double _p = Math.Log(1); // вероятность жанра
+				for (int j = 0; j < _keywords.Length; j++)
+				{
+					int k = Array.IndexOf(keywords, _keywords[j]);
+					if (k != -1)
+					{
+						if (probability[i,k] != 0)
+						{
+							_p += Math.Log(probability[i,k]);
+						}
+					}
+				}
+				if (_p >= p)
+					_genres.Add(genres[i]);
+			}
+
+			return _genres;
+		}
 	}
 }
