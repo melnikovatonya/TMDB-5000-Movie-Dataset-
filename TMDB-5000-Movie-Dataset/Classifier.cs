@@ -19,8 +19,51 @@ namespace TMDB_5000_Movie_Dataset
         public Classifier()
 		{
 			LoadDataFromFile("../../database/tmdb_5000_movies.csv");
+			PrintData();
 		}
-
+		void PrintData()
+		{
+			var sw = new StreamWriter("genres.txt");
+			for (int i = 0; i < genres.Length; i++)
+			{
+				sw.WriteLine(genres[i]);
+			}
+			sw.Close();
+			sw = new StreamWriter("keywords.txt");
+			for (int i = 0; i < keywords.Length; i++)
+			{
+				sw.WriteLine(keywords[i]);
+			}
+			sw.Close();
+			sw = new StreamWriter("frequencies.txt");
+			for (int i = 0; i < frequencies.GetLength(0); i++)
+			{
+				string s = "";
+				for (int j = 0; j < frequencies.GetLength(1); j++)
+				{
+					s += string.Format("{0,3} ", frequencies[i, j]);
+				}
+				sw.WriteLine(s);
+			}
+			sw.Close();
+			sw = new StreamWriter("probability.txt");
+			for (int i = 0; i < probability.GetLength(0); i++)
+			{
+				string s = "";
+				for (int j = 0; j < probability.GetLength(1); j++)
+				{
+					s += string.Format("{0,8} ", probability[i, j]);
+				}
+				sw.WriteLine(s);
+			}
+			sw.Close();
+			sw = new StreamWriter("prob_genres.txt");
+			for (int i = 0; i < prob_genres.Length; i++)
+			{
+				sw.WriteLine(prob_genres[i]);
+			}
+			sw.Close();
+		}
         public void LoadDataFromFile(string file_name)
 			//метод загрузки данных и их преобразования
         {
