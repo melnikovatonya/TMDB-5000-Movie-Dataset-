@@ -22,6 +22,7 @@ namespace TMDB_5000_Movie_Dataset
 		}
 
         public void LoadDataFromFile(string file_name)
+			//метод загрузки данных и их преобразования
         {
             List<string> _genres = new List<string>();
             List<string> _keywords = new List<string>();
@@ -146,6 +147,7 @@ namespace TMDB_5000_Movie_Dataset
         }
 
 		public void GetGenres(List<string>[] genres_1)
+			//метод выделения массива жанров
 		{
 			List<string> temp = new List<string>();
 			foreach (var item in genres_1)
@@ -162,6 +164,7 @@ namespace TMDB_5000_Movie_Dataset
 			genres = temp_1.ToArray();
 		}
 		public void GetKeywords(List<string>[] keywords_1, List<string>[] owerviews_1)
+			//метод выделения массива ключевых слов без повторений
 		{
 			List<string> temp = new List<string>();
 			foreach(var item in keywords_1)
@@ -217,14 +220,14 @@ namespace TMDB_5000_Movie_Dataset
 				}
 			}
 		}
-		public List<string> GetGenresOfFilm(string[] _keywords)
+		public List<string> GetGenresOfFilm(string[] _keywords) // метод классификации 
 		{
 			List<string> _genres = new List<string>();
 
 			for (int i = 0; i < genres.Length; i++)
 			{
-				double _p = Math.Log(1); // вероятность жанра
-				for (int j = 0; j < _keywords.Length; j++)
+				double _p = Math.Log(prob_genres[i]); // логарифм вероятности жанра
+				for (int j = 0; j < _keywords.Length; j++) // сумма логарифмов вероятностей жанров для каждого ключевого слова
 				{
 					int k = Array.IndexOf(keywords, _keywords[j]);
 					if (k != -1)
@@ -235,25 +238,25 @@ namespace TMDB_5000_Movie_Dataset
 						}
 					}
 				}
-				if (_p >= p)
+				if (_p >= p) // если вероятность больше константы то жанр подходит
 					_genres.Add(genres[i]);
 			}
 
 			return _genres;
 		}
 
-		public void GetGenresProbability(List<string>[] _genres)
+		public void GetGenresProbability(List<string>[] _genres) // метод получения вероятностей жанров
 		{
 			prob_genres = new double[genres.Length];
 			for (int i = 0; i < genres.Length; i++)
 			{
 				int k = 0;
-				foreach (var item in _genres)
+				foreach (var item in _genres) // количество фильмов для каждого жанра
 				{
 					if (item.IndexOf(genres[i]) != -1)
 						k += 1;
 				}
-				prob_genres[i] = (double)k / _genres.Length;
+				prob_genres[i] = (double)k / _genres.Length; //деленое на общее количество  фильмов
 			}
 		}
 
