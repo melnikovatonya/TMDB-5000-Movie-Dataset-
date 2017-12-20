@@ -75,8 +75,10 @@ namespace TMDB_5000_Movie_Dataset
 			var rx = new Regex("[0-9]+,(?<genres>\"*\\[.*\\]\"*),(?<site>.*),(?<id>[0-9]+),(?<keywords>\"*\\[.*\\]\"*),(?<lang>[a-z]+),(?<title>[^,]*),(?<owerview>\"*.*\"*),[0-9]+(\\.)*[0-9]*,\"*\\[.*\\]\"*,\"*\\[.*\\]\"*");
             {
                 string s;
-                while (!sr.EndOfStream)
+				int t = 1;
+                while (t != 4000)
                 {
+					t++;
                     s = sr.ReadLine();
                     var m = rx.Match(s);
                     if (m.Success)
