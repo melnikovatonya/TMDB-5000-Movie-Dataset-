@@ -19,51 +19,8 @@ namespace TMDB_5000_Movie_Dataset
         public Classifier()
 		{
 			LoadDataFromFile("../../database/tmdb_5000_movies.csv");
-			PrintData();
 		}
-		void PrintData()
-		{
-			var sw = new StreamWriter("genres.txt");
-			for (int i = 0; i < genres.Length; i++)
-			{
-				sw.WriteLine(genres[i]);
-			}
-			sw.Close();
-			sw = new StreamWriter("keywords.txt");
-			for (int i = 0; i < keywords.Length; i++)
-			{
-				sw.WriteLine(keywords[i]);
-			}
-			sw.Close();
-			sw = new StreamWriter("frequencies.txt");
-			for (int i = 0; i < frequencies.GetLength(0); i++)
-			{
-				string s = "";
-				for (int j = 0; j < frequencies.GetLength(1); j++)
-				{
-					s += string.Format("{0,3} ", frequencies[i, j]);
-				}
-				sw.WriteLine(s);
-			}
-			sw.Close();
-			sw = new StreamWriter("probability.txt");
-			for (int i = 0; i < probability.GetLength(0); i++)
-			{
-				string s = "";
-				for (int j = 0; j < probability.GetLength(1); j++)
-				{
-					s += string.Format("{0,8} ", probability[i, j]);
-				}
-				sw.WriteLine(s);
-			}
-			sw.Close();
-			sw = new StreamWriter("prob_genres.txt");
-			for (int i = 0; i < prob_genres.Length; i++)
-			{
-				sw.WriteLine(prob_genres[i]);
-			}
-			sw.Close();
-		}
+
         public void LoadDataFromFile(string file_name)
 			//метод загрузки данных и их преобразования
         {
@@ -231,17 +188,17 @@ namespace TMDB_5000_Movie_Dataset
 			{
 				foreach(var item2 in genres_1[t])
 				{
-					int indexGenres = Array.IndexOf(genres, item2);
-					foreach(var item3 in keywords_1[t])
+					int indexGenres = Array.IndexOf(genres, item2); // поиск индекса в массиве жанров
+					foreach (var item3 in keywords_1[t])
 					{
-						int indexKeywords = Array.IndexOf(keywords, item3);
-						frequencies[indexGenres, indexKeywords] += 1;
+						int indexKeywords = Array.IndexOf(keywords, item3); // поиск идекса в массиве ключевых слов
+						frequencies[indexGenres, indexKeywords] += 1; //подсчёт частоты
 					}
 
 					foreach (var item3 in owerviews_1[t])
 					{
 						int indexOwerviews = Array.IndexOf(keywords, item3);
-						frequencies[indexGenres, indexOwerviews] += 1;
+						frequencies[indexGenres, indexOwerviews] += 1; // подсчёт частоты
 					}
 				}
 			}
@@ -255,11 +212,11 @@ namespace TMDB_5000_Movie_Dataset
 				int sum = 0;
 				for (int j = 0; j < frequencies.GetLength(1); j++)
 				{
-					sum += frequencies[i, j];
+					sum += frequencies[i, j]; // число слов в конкретном жанре
 				}
 				for (int j = 0; j < frequencies.GetLength(1); j++)
 				{
-					probability[i, j] = (frequencies[i, j] + 1) / (sum + keywords.Length);
+					probability[i, j] = (frequencies[i, j] + 1) / (sum + keywords.Length); // вероятность
 				}
 			}
 		}
