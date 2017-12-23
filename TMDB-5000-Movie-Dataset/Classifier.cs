@@ -271,7 +271,7 @@ namespace TMDB_5000_Movie_Dataset
 
 			for (int i = 0; i < genres.Length; i++)
 			{
-				double _p = Math.Log10(prob_genres[i]); // логарифм вероятности жанра
+				double _p = prob_genres[i]; // логарифм вероятности жанра
 				for (int j = 0; j < _keywords.Length; j++) // сумма логарифмов вероятностей жанров для каждого ключевого слова
 				{
 					int k = Array.IndexOf(keywords, _keywords[j]);
@@ -279,7 +279,7 @@ namespace TMDB_5000_Movie_Dataset
 					{
 						if (probability[i,k] != 0)
 						{
-							_p += Math.Log10(probability[i,k]);
+							_p *= probability[i,k];
 						}
 					}
 				}
