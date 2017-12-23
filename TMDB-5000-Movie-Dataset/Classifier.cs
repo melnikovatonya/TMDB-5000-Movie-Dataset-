@@ -41,7 +41,7 @@ namespace TMDB_5000_Movie_Dataset
 				string s = "";
 				for (int j = 0; j < frequencies.GetLength(1); j++)
 				{
-					s += string.Format("{0,3} ", frequencies[i, j]);
+					s += string.Format("{0,8} ", frequencies[i, j].ToString());
 				}
 				sw.WriteLine(s);
 			}
@@ -261,7 +261,7 @@ namespace TMDB_5000_Movie_Dataset
 				}
 				for (int j = 0; j < frequencies.GetLength(1); j++)
 				{
-					probability[i, j] = (frequencies[i, j] + 1) / (sum + keywords.Length);
+					probability[i, j] = (double)(frequencies[i, j] + 1) / (sum + keywords.Length);
 				}
 			}
 		}
