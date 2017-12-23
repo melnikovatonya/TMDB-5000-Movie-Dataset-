@@ -28,11 +28,11 @@
 						</Menu>
 						<DockPanel Margin="5">
 							<Label Content="Название фильма: "/>
-							<TextBox Name="FilmNameText"/>
+								<TextBox Name="FilmNameText" Text="Back to the Future"/>
 						</DockPanel>
 						<DockPanel Margin="5">
 							<Label Content="Описание: "/>
-								<TextBox Name="OwerviewsText"  Height="100" TextWrapping="Wrap"/>
+								<TextBox Name="OwerviewsText"  Height="100" TextWrapping="Wrap" Text="Marty McFly, a 17-year-old high school student, is accidentally sent thirty years into the past in a time-traveling DeLorean invented by his close friend, the maverick scientist Doc Brown."/>
 						</DockPanel>
 						<Button Content=" Определить жанры " HorizontalAlignment="Center" Click="Button_Click_1"></Button>
 					</StackPanel>

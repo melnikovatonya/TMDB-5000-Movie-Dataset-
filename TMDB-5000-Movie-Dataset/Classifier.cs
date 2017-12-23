@@ -76,7 +76,7 @@ namespace TMDB_5000_Movie_Dataset
             {
                 string s;
 				int t = 1;
-                while (t != 2000)
+                while (t != 1000)
                 {
 					t++;
                     s = sr.ReadLine();
@@ -283,7 +283,8 @@ namespace TMDB_5000_Movie_Dataset
 						}
 					}
 				}
-				if (_p >= p) // если вероятность больше константы то жанр подходит
+				double t = Math.Round(_p, 8);
+				if (t >= p) // если вероятность больше константы то жанр подходит
 					_genres.Add(genres[i]);
 			}
 
