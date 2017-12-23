@@ -28,13 +28,13 @@
 						</Menu>
 						<DockPanel Margin="5">
 							<Label Content="Название фильма: "/>
-							<TextBlock/>
+							<TextBox Name="FilmNameText"/>
 						</DockPanel>
 						<DockPanel Margin="5">
 							<Label Content="Описание: "/>
-							<TextBox Height="100" TextWrapping="Wrap"/>
+								<TextBox Name="OwerviewsText"  Height="100" TextWrapping="Wrap"/>
 						</DockPanel>
-						<Button Content=" Определить жанры " HorizontalAlignment="Center"></Button>
+						<Button Content=" Определить жанры " HorizontalAlignment="Center" Click="Button_Click_1"></Button>
 					</StackPanel>
 					</Grid>
 				</TabItem.Content>

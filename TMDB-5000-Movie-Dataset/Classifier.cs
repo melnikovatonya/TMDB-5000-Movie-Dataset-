@@ -156,7 +156,7 @@ namespace TMDB_5000_Movie_Dataset
 			sr.Close();
         }
 
-		List<string> TransformOfDescrip(string description)
+		public List<string> TransformOfDescrip(string description)
         {
 			string file_name = "../../Предлоги и союзы.txt";
             char[] c = { ' ', ',', '.', '!', '?', ':', ';', '(', ')', '"', '-', '\'', '_' };

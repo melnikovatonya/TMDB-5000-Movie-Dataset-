@@ -26,7 +26,9 @@ namespace TMDB_5000_Movie_Dataset
             InitializeComponent();
         }
 		Classifier classifier;
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+		
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 			classifier = new Classifier();
 			foreach (var s in classifier.genres)
@@ -38,6 +40,14 @@ namespace TMDB_5000_Movie_Dataset
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 
+		}
+
+		private void Button_Click_1(object sender, RoutedEventArgs e)
+		{
+			List<string> owerviews_new = new List<string>();
+			owerviews_new = classifier.TransformOfDescrip(OwerviewsText.Text);
+			owerviews_new.AddRange(classifier.TransformOfDescrip(FilmNameText.Text));
+			List<string> genres_new = classifier.GetGenresOfFilm(owerviews_new.ToArray());
 		}
 	}
 }
