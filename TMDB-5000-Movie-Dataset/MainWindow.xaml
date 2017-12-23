@@ -6,21 +6,57 @@
         xmlns:local="clr-namespace:TMDB_5000_Movie_Dataset"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
-    <Grid>
-        <StackPanel>
-            <Menu Margin="5">
-                <Button Content="Начать обучение"
+	<Grid>
+		<TabControl>
+			<TabItem>
+				<TabItem.Header>
+					<StackPanel Orientation="Horizontal">
+						<Ellipse Height="10" Width="10" Fill="Black" />
+						<TextBlock Margin="3">111</TextBlock>
+					</StackPanel>
+				</TabItem.Header>
+				<TabItem.Content>
+					<Grid>
+						<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="65*"/>
+						<ColumnDefinition Width="452*"/>
+					</Grid.ColumnDefinitions>
+					<StackPanel Grid.ColumnSpan="2">
+						<Menu Margin="5">
+							<Button Content="Начать обучение"
                         Click="Button_Click"/>
-            </Menu>
-            <DockPanel Margin="5">
-                <Label Content="Название фильма: "/>
-                <TextBlock/>
-            </DockPanel>
-            <DockPanel Margin="5">
-                <Label Content="Описание: "/>
-                <TextBox Height="100" TextWrapping="Wrap"/>
-            </DockPanel>
-            <Button Content=" Определить жанры " HorizontalAlignment="Center"></Button>
-        </StackPanel>
-    </Grid>
+						</Menu>
+						<DockPanel Margin="5">
+							<Label Content="Название фильма: "/>
+							<TextBlock/>
+						</DockPanel>
+						<DockPanel Margin="5">
+							<Label Content="Описание: "/>
+							<TextBox Height="100" TextWrapping="Wrap"/>
+						</DockPanel>
+						<Button Content=" Определить жанры " HorizontalAlignment="Center"></Button>
+					</StackPanel>
+					</Grid>
+				</TabItem.Content>
+			</TabItem>
+			<TabItem>
+				<TabItem.Header>
+					<StackPanel Orientation="Horizontal">
+						<Ellipse Height="10" Width="10" Fill="Black" />
+						<TextBlock Margin="3">222</TextBlock>
+					</StackPanel>
+				</TabItem.Header>
+				<TabItem.Content>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="150"/>
+							<RowDefinition Height="100"/>
+						</Grid.RowDefinitions>
+						<TextBox  Grid.Row="0" Name="GenresBlock" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="True"/>
+					</Grid>
+				</TabItem.Content>
+			</TabItem>
+		</TabControl>
+	</Grid>
 </Window>

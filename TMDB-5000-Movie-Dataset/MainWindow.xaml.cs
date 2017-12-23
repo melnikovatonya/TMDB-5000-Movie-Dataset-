@@ -29,6 +29,10 @@ namespace TMDB_5000_Movie_Dataset
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
 			classifier = new Classifier();
+			foreach (var s in classifier.genres)
+			{
+				GenresBlock.Text += s + "\n";
+			}
         }
 
 		private void Button_Click(object sender, RoutedEventArgs e)

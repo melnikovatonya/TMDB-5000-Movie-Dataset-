@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace TMDB_5000_Movie_Dataset
 {
-    class Classifier
+    public class Classifier
     {
-        string[] genres;
+        public string[] genres;
         string[] keywords;
         int[,] frequencies;
 		double[,] probability;
@@ -76,7 +76,7 @@ namespace TMDB_5000_Movie_Dataset
             {
                 string s;
 				int t = 1;
-                while (t != 4000)
+                while (t != 2000)
                 {
 					t++;
                     s = sr.ReadLine();
