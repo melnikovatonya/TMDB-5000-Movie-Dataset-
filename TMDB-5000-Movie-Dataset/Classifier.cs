@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TMDB_5000_Movie_Dataset
 {
@@ -18,7 +20,7 @@ namespace TMDB_5000_Movie_Dataset
 		const double p = 0.5;
         public Classifier()
 		{
-			LoadDataFromFile("../../database/tmdb_5000_movies.csv");
+			double t = LoadDataFromFile("../../database/tmdb_5000_movies.csv");
 			PrintData();
 		}
 		void PrintData()
@@ -64,9 +66,12 @@ namespace TMDB_5000_Movie_Dataset
 			}
 			sw.Close();
 		}
-        public void LoadDataFromFile(string file_name)
+        public double LoadDataFromFile(string file_name)
 			//метод загрузки данных и их преобразования
         {
+			Stopwatch time = new Stopwatch();
+			time.Start();
+
             List<string> _genres = new List<string>();
             List<string> _keywords = new List<string>();
             List<string> _owerviews = new List<string>();
@@ -76,7 +81,7 @@ namespace TMDB_5000_Movie_Dataset
             {
                 string s;
 				int t = 1;
-                while (t != 100)
+                while (!sr.EndOfStream)
                 {
 					t++;
                     s = sr.ReadLine();
@@ -154,6 +159,9 @@ namespace TMDB_5000_Movie_Dataset
 			GetFrequencies(genres_1, keywords_1, owerviews_1);
 			GetProbability();
 			sr.Close();
+
+			time.Stop();
+			return time.ElapsedMilliseconds / 1000.0;
         }
 
 		public List<string> TransformOfDescrip(string description)
@@ -233,6 +241,7 @@ namespace TMDB_5000_Movie_Dataset
 			{
 				foreach(var item2 in genres_1[t])
 				{
+					Application.DoEvents();
 					int indexGenres = Array.IndexOf(genres, item2);
 					 foreach(var item3 in keywords_1[t])
 					{
