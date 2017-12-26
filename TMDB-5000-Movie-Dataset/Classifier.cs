@@ -21,50 +21,57 @@ namespace TMDB_5000_Movie_Dataset
         public Classifier(int film_number)
 		{
 			LoadDataFromFile("../../database/tmdb_5000_movies.csv", film_number);
-			//PrintData();
+			Task task = PrintData();
 		}
-		void PrintData()
+		Task PrintData()
 		{
-			var sw = new StreamWriter("genres.txt");
-			for (int i = 0; i < genres.Length; i++)
+			Task task = new Task(() =>
 			{
-				sw.WriteLine(genres[i]);
-			}
-			sw.Close();
-			sw = new StreamWriter("keywords.txt");
-			for (int i = 0; i < keywords.Length; i++)
-			{
-				sw.WriteLine(keywords[i]);
-			}
-			sw.Close();
-			sw = new StreamWriter("frequencies.txt");
-			for (int i = 0; i < frequencies.GetLength(0); i++)
-			{
-				string s = "";
-				for (int j = 0; j < frequencies.GetLength(1); j++)
+				var sw = new StreamWriter("genres.txt");
+				for (int i = 0; i < genres.Length; i++)
 				{
-					s += string.Format("{0,8} ", frequencies[i, j].ToString());
+					sw.WriteLine(genres[i]);
 				}
-				sw.WriteLine(s);
-			}
-			sw.Close();
-			sw = new StreamWriter("probability.txt");
-			for (int i = 0; i < probability.GetLength(0); i++)
-			{
-				string s = "";
-				for (int j = 0; j < probability.GetLength(1); j++)
+				sw.Close();
+				sw = new StreamWriter("keywords.txt");
+				for (int i = 0; i < keywords.Length; i++)
 				{
-					s += string.Format("{0,8} ", probability[i, j]);
+					sw.WriteLine(keywords[i]);
 				}
-				sw.WriteLine(s);
-			}
-			sw.Close();
-			sw = new StreamWriter("prob_genres.txt");
-			for (int i = 0; i < prob_genres.Length; i++)
-			{
-				sw.WriteLine(prob_genres[i]);
-			}
-			sw.Close();
+				sw.Close();
+				sw = new StreamWriter("frequencies.txt");
+				for (int i = 0; i < frequencies.GetLength(0); i++)
+				{
+					string s = "";
+					for (int j = 0; j < frequencies.GetLength(1); j++)
+					{
+						s += string.Format("{0,8} ", frequencies[i, j].ToString());
+					}
+					sw.WriteLine(s);
+				}
+				sw.Close();
+				sw = new StreamWriter("probability.txt");
+				for (int i = 0; i < probability.GetLength(0); i++)
+				{
+					string s = "";
+					for (int j = 0; j < probability.GetLength(1); j++)
+					{
+						s += string.Format("{0,8} ", probability[i, j]);
+					}
+					sw.WriteLine(s);
+
+				}
+				sw.Close();
+				sw = new StreamWriter("prob_genres.txt");
+				for (int i = 0; i < prob_genres.Length; i++)
+				{
+					sw.WriteLine(prob_genres[i]);
+
+				}
+				sw.Close();
+			});
+			task.Start();
+			return task;
 		}
         public void LoadDataFromFile(string file_name, int film_number)
 			//метод загрузки данных и их преобразования
@@ -88,9 +95,9 @@ namespace TMDB_5000_Movie_Dataset
                     var m = rx.Match(s);
                     if (m.Success)
                     {
-                        _genres.Add(m.Groups["genres"].ToString());
-                        _keywords.Add(m.Groups["keywords"].ToString());
-                        _owerviews.Add(m.Groups["owerview"].ToString());
+                        _genres.Add(m.Groups["genres"].ToString().ToLower());
+                        _keywords.Add(m.Groups["keywords"].ToString().ToLower());
+                        _owerviews.Add(m.Groups["owerview"].ToString().ToLower());
                     }
                 }
             }
@@ -139,7 +146,7 @@ namespace TMDB_5000_Movie_Dataset
                     }
                     if (m.Success)
                     {
-                        keywords_1[i].Add(m.Groups["name"].ToString());
+                        keywords_1[i].AddRange(TransformOfDescrip(m.Groups["name"].ToString()));
                     }
                     p = m.Index + m.Length;
                 }
@@ -299,19 +306,22 @@ namespace TMDB_5000_Movie_Dataset
 
 			for (int i = 0; i < genres.Length; i++)
 			{
-				double _p = prob_genres[i]; // логарифм вероятности жанра
-				for (int j = 0; j < _keywords.Length; j++) // сумма логарифмов вероятностей жанров для каждого ключевого слова
+				double _p = prob_genres[i]; // вероятность жанра
+				for (int j = 0; j < _keywords.Length; j++) // произведение вероятностей жанров для каждого ключевого слова
 				{
 					int k = Array.IndexOf(keywords, _keywords[j]);
 					if (k != -1)
 					{
-						if (probability[i,k] != 0)
-						{
-							_p *= probability[i,k];
-						}
+						_p *= probability[i,k];
 					}
 				}
-				int t = int.Parse((_p.ToString()[0]).ToString());
+				string s = ""; int l = 0;
+				while (_p.ToString()[l] != ',')
+				{
+					s += _p.ToString()[l];
+					l++;
+				}
+				int t = int.Parse(s);
 				if (t >= 5) // если вероятность больше константы то жанр подходит
 					_genres.Add(genres[i]);
 			}
@@ -332,6 +342,7 @@ namespace TMDB_5000_Movie_Dataset
 				}
 				prob_genres[i] = (double)k / _genres.Length; //деленое на общее количество  фильмов
 			}
+			var j = prob_genres.Sum();
 		}
 
 	}
