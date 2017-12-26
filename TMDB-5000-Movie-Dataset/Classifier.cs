@@ -12,16 +12,16 @@ namespace TMDB_5000_Movie_Dataset
 {
     public class Classifier
     {
-        public string[] genres;
+        string[] genres;
         string[] keywords;
         int[,] frequencies;
 		double[,] probability;
 		double[] prob_genres;
-		const double p = 0.5;
-        public Classifier()
+		public double time;
+        public Classifier(int film_number)
 		{
-			double t = LoadDataFromFile("../../database/tmdb_5000_movies.csv");
-			PrintData();
+			LoadDataFromFile("../../database/tmdb_5000_movies.csv", film_number);
+			//PrintData();
 		}
 		void PrintData()
 		{
@@ -66,11 +66,11 @@ namespace TMDB_5000_Movie_Dataset
 			}
 			sw.Close();
 		}
-        public double LoadDataFromFile(string file_name)
+        public void LoadDataFromFile(string file_name, int film_number)
 			//метод загрузки данных и их преобразования
         {
-			Stopwatch time = new Stopwatch();
-			time.Start();
+			Stopwatch _time = new Stopwatch();
+			_time.Start();
 
             List<string> _genres = new List<string>();
             List<string> _keywords = new List<string>();
@@ -81,7 +81,7 @@ namespace TMDB_5000_Movie_Dataset
             {
                 string s;
 				int t = 1;
-                while (!sr.EndOfStream)
+                while (t != film_number)
                 {
 					t++;
                     s = sr.ReadLine();
@@ -160,8 +160,8 @@ namespace TMDB_5000_Movie_Dataset
 			GetProbability();
 			sr.Close();
 
-			time.Stop();
-			return time.ElapsedMilliseconds / 1000.0;
+			_time.Stop();
+			time = _time.ElapsedMilliseconds / 1000.0;
         }
 
 		public List<string> TransformOfDescrip(string description)
@@ -233,30 +233,49 @@ namespace TMDB_5000_Movie_Dataset
 			keywords = temp_1.ToArray();
 		}
 
+		private int BinarySearch(string x)
+		{
+			int first = 0;
+			int last = keywords.Length;
+
+			while (first < last)
+			{
+				int mid = first + (last - first) / 2;
+
+				if (String.Compare(x, keywords[mid]) <= 0)
+					last = mid;
+				else
+					first = mid + 1;
+			}
+			if (keywords[last] == x)
+				return last;
+			else
+				return 0;
+		}
 		public void GetFrequencies(List<string>[] genres_1, List<string>[] keywords_1, List<string>[] owerviews_1)
 		{
 			frequencies = new int[genres.Length, keywords.Length];
 			
 			for (int t = 0; t < genres_1.Length; t++)
-			{
+			{ 
 				foreach(var item2 in genres_1[t])
 				{
-					Application.DoEvents();
 					int indexGenres = Array.IndexOf(genres, item2);
 					 foreach(var item3 in keywords_1[t])
 					{
-						int indexKeywords = Array.IndexOf(keywords, item3);
+						//int indexKeywords = Array.IndexOf(keywords, item3);
+						int indexKeywords = BinarySearch(item3);
 						frequencies[indexGenres, indexKeywords] += 1;
 					}
 
 					foreach (var item3 in owerviews_1[t])
 					{
-						int indexOwerviews = Array.IndexOf(keywords, item3);
+						//int indexOwerviews = Array.IndexOf(keywords, item3);
+						int indexOwerviews = BinarySearch(item3);
 						frequencies[indexGenres, indexOwerviews] += 1;
 					}
 				}
 			}
-
 		}
 		public void GetProbability()
 		{
