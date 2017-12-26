@@ -176,14 +176,17 @@ namespace TMDB_5000_Movie_Dataset
 			string file_name = "../../Предлоги и союзы.txt";
             char[] c = { ' ', ',', '.', '!', '?', ':', ';', '(', ')', '"', '-', '\'', '_' };
             string[] words = description.Split(c); // массив слов из описания без знаков
-            StreamReader sr = new StreamReader(file_name);
-            string[] prep_and_conj = sr.ReadToEnd().Split('\r', '\n'); // массив предлогов и союзов из файла
+												   //StreamReader sr = new StreamReader(file_name);
+												   //string[] prep_and_conj = sr.ReadToEnd().Split('\r', '\n'); // массив предлогов и союзов из файла
+			string[] prep_and_conj = File.ReadAllLines(file_name);
             List<string> transform_descrip = new List<string>(); // лист для конечного результата
             foreach (string s in words)
             {
                 if (Array.IndexOf(prep_and_conj, s) == -1) // проверка, что слова нет в массиве с союзами и предлогами
                 {
-					if (s.Length == 1)
+					if (s.Length == 0)
+						continue;
+					else if (s.Length == 1)
 					{
 						if (!Char.IsLetter(s[0]))
 							continue;
@@ -202,7 +205,7 @@ namespace TMDB_5000_Movie_Dataset
                     //transform_descrip.Add(s.ToLower()); // добавляем не союзы и предлоги
                 }
             }
-            sr.Close();
+            //sr.Close();
 			return transform_descrip;
         }
 
