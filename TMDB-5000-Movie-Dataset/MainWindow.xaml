@@ -59,8 +59,9 @@
                                     <TextBlock Text="По какому кол-ву фильмов будет идти обучение?:" TextWrapping="Wrap"/>
                                 </Label.Content>
                             </Label>
-                            <TextBox Name="filmNumberTextBox" Margin="5" Text="4000"/>
+                            <TextBox Name="filmNumberTextBox" Margin="5" Text="1000"/>
                             <Button Name="learningButton" Content="Выполнить обучение" Margin="5" HorizontalAlignment="Center" Click="learningButton_Click"/>
+                            <Button Name="learningButton1" Content="Загрузка из файла" Margin="20" HorizontalAlignment="Center" Click="learningButton1_Click"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1">
                             <Label Content="Время обучения:"/>

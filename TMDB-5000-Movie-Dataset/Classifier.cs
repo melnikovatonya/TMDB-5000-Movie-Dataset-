@@ -18,9 +18,15 @@ namespace TMDB_5000_Movie_Dataset
 		double[,] probability;
 		double[] prob_genres;
 		public double time;
-        public Classifier(int film_number)
+		EnglishStemmer en_stem = new EnglishStemmer();
+		int film_num;
+        public Classifier(int film_number, int mode)
 		{
-			LoadDataFromFile("../../database/tmdb_5000_movies.csv", film_number);
+			film_num = film_number;
+			if (mode == 0)
+				LoadDataFromFile("../../database/tmdb_5000_movies.csv", film_num);
+			else
+				LoadDataFromFile1();
 			Task task = PrintData();
 		}
 		Task PrintData()
@@ -28,44 +34,63 @@ namespace TMDB_5000_Movie_Dataset
 			Task task = new Task(() =>
 			{
 				var sw = new StreamWriter("genres.txt");
+				sw.WriteLine(genres.Length);
 				for (int i = 0; i < genres.Length; i++)
 				{
 					sw.WriteLine(genres[i]);
 				}
 				sw.Close();
 				sw = new StreamWriter("keywords.txt");
+				sw.WriteLine(keywords.Length);
 				for (int i = 0; i < keywords.Length; i++)
 				{
 					sw.WriteLine(keywords[i]);
 				}
 				sw.Close();
 				sw = new StreamWriter("frequencies.txt");
-				for (int i = 0; i < frequencies.GetLength(0); i++)
+				for (int i = 0; i < frequencies.GetLength(1); i++)
 				{
 					string s = "";
-					for (int j = 0; j < frequencies.GetLength(1); j++)
+					for (int j = 0; j < frequencies.GetLength(0); j++)
 					{
-						s += string.Format("{0,8} ", frequencies[i, j].ToString());
+						s += string.Format("{0} ", frequencies[j, i].ToString());
 					}
 					sw.WriteLine(s);
 				}
 				sw.Close();
-				sw = new StreamWriter("probability.txt");
-				for (int i = 0; i < probability.GetLength(0); i++)
-				{
-					string s = "";
-					for (int j = 0; j < probability.GetLength(1); j++)
-					{
-						s += string.Format("{0,8} ", probability[i, j]);
-					}
-					sw.WriteLine(s);
-
-				}
-				sw.Close();
+				////var bw = new BinaryWriter(File.OpenWrite("prob_genres.bin"));
+				////for (int i = 0; i < prob_genres.Length; i++)
+				////{
+				////	bw.Write(prob_genres[i]);
+				////}
+				////bw.Close();
+				////bw = new BinaryWriter(File.OpenWrite("probability.bin"));
+				////for (int i = 0; i < probability.GetLength(0); i++)
+				////{
+				////	string s = "";
+				////	for (int j = 0; j < probability.GetLength(1); j++)
+				////	{
+				////		s += string.Format("{0,8} ", probability[i, j]);
+				////	}
+				////	bw.Write(s);
+				////}
+				////bw.Close();
 				sw = new StreamWriter("prob_genres.txt");
 				for (int i = 0; i < prob_genres.Length; i++)
 				{
-					sw.WriteLine(prob_genres[i]);
+					sw.WriteLine(prob_genres[i].ToString());
+
+				}
+				sw.Close();
+				sw = new StreamWriter("probability.txt");
+				for (int i = 0; i < probability.GetLength(1); i++)
+				{
+					string s = "";
+					for (int j = 0; j < probability.GetLength(0); j++)
+					{
+						s += string.Format("{0} ", probability[j, i]);
+					}
+					sw.WriteLine(s);
 
 				}
 				sw.Close();
@@ -73,7 +98,72 @@ namespace TMDB_5000_Movie_Dataset
 			task.Start();
 			return task;
 		}
-        public void LoadDataFromFile(string file_name, int film_number)
+		public void LoadDataFromFile1()
+		{
+			Stopwatch _time = new Stopwatch();
+			_time.Start();
+			try
+			{
+				int g_l = 0, k_l = 0;
+				string[] temp = File.ReadAllLines("genres.txt");
+				string[] temp1 = File.ReadAllLines("keywords.txt");
+				g_l = int.Parse(temp[0]);
+				k_l = int.Parse(temp1[0]);
+				if (g_l == temp.Length - 1 && k_l == temp1.Length - 1)
+				{
+					var temp_ = temp.ToList();
+					temp_.RemoveAt(0);
+					genres = temp_.ToArray();
+					temp_ = temp1.ToList();
+					temp_.RemoveAt(0);
+					keywords = temp_.ToArray();
+
+					temp = File.ReadAllLines("frequencies.txt");
+					var temp_1 = temp[0].Split(new char[] { ' ' });
+					temp1 = File.ReadAllLines("probability.txt");
+					var temp_2 = temp1[0].Split(new char[] { ' ' });
+					if(temp.Length == k_l && temp_1.Length - 1 == g_l && temp1.Length == k_l && temp_2.Length - 1 == g_l)
+					{
+						frequencies = new int[g_l, k_l];
+						probability = new double[g_l, k_l];
+						for (int i = 0; i < k_l; i++)
+						{
+							temp_1 = temp[i].Split(new char[] { ' ' });
+							temp_2 = temp1[i].Split(new char[] { ' ' });
+							for (int j = 0; j < g_l; j++)
+							{
+								frequencies[j, i] = int.Parse(temp_1[j]);
+								probability[j, i] = double.Parse(temp_2[j]);
+							}
+						}
+
+						temp = File.ReadAllLines("prob_genres.txt");
+						if(temp.Length == g_l)
+						{
+							prob_genres = new double[g_l];
+							for (int i = 0; i < g_l; i++)
+							{
+								prob_genres[i] = double.Parse(temp[i]);
+							}
+						}
+					}
+				}
+				else
+				{
+					MessageBox.Show("Ошибка данных!");
+					LoadDataFromFile("../../database/tmdb_5000_movies.csv", film_num);
+				}
+			}
+			catch
+			{
+				MessageBox.Show("Ошибка данных!");
+				LoadDataFromFile("../../database/tmdb_5000_movies.csv", film_num);
+			}
+			_time.Stop();
+			time = _time.ElapsedMilliseconds / 1000.0;
+		}
+
+		public void LoadDataFromFile(string file_name, int film_number)
 			//метод загрузки данных и их преобразования
         {
 			Stopwatch _time = new Stopwatch();
@@ -205,7 +295,13 @@ namespace TMDB_5000_Movie_Dataset
                     //transform_descrip.Add(s.ToLower()); // добавляем не союзы и предлоги
                 }
             }
-            //sr.Close();
+
+			string[] temp = transform_descrip.ToArray();
+			for (int i = 0; i < temp.Length; i++)
+			{
+				temp[i] = en_stem.Stem(temp[i]);
+			}
+			transform_descrip = temp.Distinct().ToList();
 			return transform_descrip;
         }
 
@@ -232,11 +328,19 @@ namespace TMDB_5000_Movie_Dataset
 			List<string> temp = new List<string>();
 			foreach(var item in keywords_1)
 			{
-				temp.AddRange(item);
+				foreach (var item1 in item)
+				{
+					temp.Add(en_stem.Stem(item1));
+				}
+				//temp.AddRange(item);
 			}
 			foreach (var item in owerviews_1)
 			{
-				temp.AddRange(item);
+				foreach (var item1 in item)
+				{
+					temp.Add(en_stem.Stem(item1));
+				}
+				//temp.AddRange(item);
 			}
 			List<string> temp_1 = temp.Distinct().ToList();
 			temp_1.Sort();
@@ -303,10 +407,10 @@ namespace TMDB_5000_Movie_Dataset
 				}
 			}
 		}
-		public List<string> GetGenresOfFilm(string[] _keywords) // метод классификации 
+		public List<KeyValuePair<double, string>> GetGenresOfFilm(string[] _keywords) // метод классификации 
 		{
-			List<string> _genres = new List<string>();
-
+			List<KeyValuePair<double,string>> _genres = new List<KeyValuePair<double, string>>();
+			List<KeyValuePair<double, string>> temp = new List<KeyValuePair<double, string>>();
 			for (int i = 0; i < genres.Length; i++)
 			{
 				double _p = prob_genres[i]; // вероятность жанра
@@ -318,20 +422,45 @@ namespace TMDB_5000_Movie_Dataset
 						_p *= probability[i,k];
 					}
 				}
-				string s = ""; int l = 0;
-				while (_p.ToString()[l] != ',')
-				{
-					s += _p.ToString()[l];
-					l++;
-				}
-				int t = int.Parse(s);
-				if (t >= 5) // если вероятность больше константы то жанр подходит
-					_genres.Add(genres[i]);
+				temp.Add(new KeyValuePair<double, string>(_p, genres[i]));
 			}
-
+			double ss = 0;
+			foreach (var item in temp)
+			{
+				string s = item.Key.ToString();
+				if(s.IndexOf('E') != -1)
+				{
+					var s_ = Math.Abs(int.Parse(s.Substring(s.IndexOf('E') + 1)));
+					ss += s_;
+				}
+				else
+				{
+					var s_ = s.Substring(s.IndexOf('.'));
+					int i = 0;
+					for (int k = 0; k < s_.Length; k++)
+					{
+						if (s_[k] == 0)
+							k++;
+						else
+							break;
+					}
+					ss += i + 1;
+				}
+			}
+			ss /= (double)genres.Length;
+			double d = 5 * Math.Pow(10, -(int)ss); 
+			foreach (var item in temp)
+			{
+				if (item.Key >= d)
+					_genres.Add(item);
+			}
+			_genres.Sort(Compare1);
 			return _genres;
 		}
-
+		static int Compare1(KeyValuePair<double, string> b, KeyValuePair<double, string> a)
+		{
+			return a.Key.CompareTo(b.Key);
+		}
 		public void GetGenresProbability(List<string>[] _genres) // метод получения вероятностей жанров
 		{
 			prob_genres = new double[genres.Length];
